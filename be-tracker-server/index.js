@@ -41,14 +41,14 @@ app.post('/todos', (req, res) => {
   let todo_id = req.body.todo_id; 
   let todo_title = req.body.todo_title;
   let todo_body = req.body.todo_body;
-  // let todo_duedate = req.body.todo_duedate;
+  let todo_duedate = req.body.todo_duedate;
   
-  // console.log(`Data: { todo_id: ${todo_id}, todo_title: ${todo_title}, todo_body: ${todo_body}, todo_duedate: ${todo_duedate} }`);
-  console.log(`Data: { todo_id: ${todo_id}, todo_title: ${todo_title}, todo_body: ${todo_body} }`);
+  console.log(`Data: { todo_id: ${todo_id}, todo_title: ${todo_title}, todo_body: ${todo_body}, todo_duedate: ${todo_duedate} }`);
+  // console.log(`Data: { todo_id: ${todo_id}, todo_title: ${todo_title}, todo_body: ${todo_body} }`);
   
   
-  // theDB.run('INSERT INTO todos (todo_id, todo_title, todo_body) VALUES(?, ?, ?)', [todo_id, todo_title, todo_body, todo_duedate], (err => {
-  theDB.run('INSERT INTO todos (todo_id, todo_title, todo_body) VALUES(?, ?, ?)', [todo_id, todo_title, todo_body], (err => {
+  theDB.run('INSERT INTO todos (todo_id, todo_title, todo_body, todo_duedate) VALUES(?, ?, ?, ?)', [todo_id, todo_title, todo_body, todo_duedate], (err => {
+  // theDB.run('INSERT INTO todos (todo_id, todo_title, todo_body) VALUES(?, ?, ?)', [todo_id, todo_title, todo_body], (err => {
     if (err) {
       console.log(err.message);
       res.send(err.message);
@@ -95,15 +95,15 @@ app.put('/todos/:todo_id', (req, res) => {
   // Extract todo from req and update DB with it using its ID and body
   // Send back an OK/Fail message
   console.log("Receiving a PUT /todos/:todo_id request");
-
+  console.log(`due date?, ${req.body.todo_duedate}`)
   const todo_id = req.params.todo_id;
   const todo_title = req.body.todo_title;
   const todo_body  = req.body.todo_body; 
   const todo_duedate  = req.body.todo_duedate; 
 
-  console.log(`Data: { todo_id: ${todo_id}, todo_title: ${todo_title}, todo_body: ${todo_body}, todo_duedate: ${todo_duedate} }`);
+  // console.log(`Data: { todo_id: ${todo_id}, todo_title: ${todo_title}, todo_body: ${todo_body}, todo_duedate: ${todo_duedate} }`);
   
-  let sql = 'UPDATE todos SET todo_title = ?, todo_body = ? WHERE todo_id = ?';
+  let sql = 'UPDATE todos SET todo_title = ?, todo_body = ?, todo_duedate = ? WHERE todo_id = ?';
   theDB.run(sql, [todo_title, todo_body, todo_id, todo_duedate], (err => {
     if (err) {
       console.log(err.message);

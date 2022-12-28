@@ -38,12 +38,12 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
   const [todoID, setTodoID] = useState<number>(props.todo_id);
   const [todo_title, setTodoTitle] = useState<string>(props.todo_title);
   const [todo_body, setTodoBody] = useState<string>(props.todo_body);
-  // const [todo_duedate, setTodoDueDate] = useState<string>(props.todo_duedate | '');
+  const [todo_duedate, setTodoDueDate] = useState<Date | null | undefined>(props.todo_duedate);
   const [open, setOpen] = useState<boolean>(false);
   
-  const datetime = (dt: number) => {
+  const datetime = (dt: number | Date) => {
     let date: Date = new Date(dt);
-    let result: string = date.toLocaleDateString() + ':' + date.toLocaleTimeString();
+    let result: string = date.toLocaleDateString() + ' | ' + date.toLocaleTimeString();
     return result;
   }
 
@@ -58,8 +58,8 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
     setOpen(true);
   }
 
-  // const closeDialog = (title: string, body: string, duedate: string) => {
-  const closeDialog = (title: string, body: string) => {
+  const closeDialog = (title: string, body: string, duedate: Date | null) => {
+  // const closeDialog = (title: string, body: string) => {
     if(title === '' || body === '') {
       setOpen(false);
       return;
@@ -67,12 +67,12 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
 
     setTodoTitle(title);
     setTodoBody(body);
-    // setTodoDueDate(duedate)
+    setTodoDueDate(duedate)
     setOpen(false);
-    console.log("Inside TodoCard closeDialog: ", todoID, title, body);
-    // console.log("Inside TodoCard closeDialog: ", todoID, title, body, duedate);
-    // props.handleEditTodo(todoID, title, body, duedate);        
-    props.handleEditTodo(todoID, title, body);        
+    // console.log("Inside TodoCard closeDialog: ", todoID, title, body);
+    console.log("Inside TodoCard closeDialog: ", todoID, title, body, duedate);
+    props.handleEditTodo(todoID, title, body, duedate);        
+    // props.handleEditTodo(todoID, title, body);        
   }
 
   const classes = useStyles();  
@@ -89,15 +89,18 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
           </Typography>
           <Typography variant="h5" component="h2">            
           { todo_body }
-          </Typography>               
+          </Typography>     
+          <Typography>
+            {todo_duedate ? `Due by: ${datetime(todo_duedate)}` : '' }
+          </Typography>          
         </CardContent>
         <CardActions>
             <Button id="edTodo" size="small" variant="contained" color="primary" onClick={edTodo}>Edit</Button>
             <Button id="delTodo" size="small" variant="contained" color="secondary" onClick={delTodo}>X</Button>
         </CardActions>
     </Card>           
-    {/* <EditCard title={todo_title} body={todo_body} duedate={todo_duedate} open={open} closeDialog={closeDialog} /> */}
-    <EditCard title={todo_title} body={todo_body}  open={open} closeDialog={closeDialog} />
+    <EditCard title={todo_title} body={todo_body} duedate={todo_duedate} open={open} closeDialog={closeDialog} />
+    {/* <EditCard title={todo_title} body={todo_body}  open={open} closeDialog={closeDialog} /> */}
     </>
   );
 }  

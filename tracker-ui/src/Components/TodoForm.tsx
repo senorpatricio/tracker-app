@@ -62,6 +62,7 @@ class TodoForm extends React.PureComponent<IFunc & StyledComponentProps, IState>
   }
   
   private handleChangeTodoDueDate(newValue: Date | null) {
+    console.log('new date',newValue)
     this.setState({ todo_duedate: newValue })
   }
 
@@ -79,9 +80,7 @@ class TodoForm extends React.PureComponent<IFunc & StyledComponentProps, IState>
     const todo_body  = this.state.todo_body;
     const titleStyle = { marginTop: '10px', marginBottom: '5px' }
     const todo_duedate = this.state.todo_duedate;
-    const inputProps = {
 
-    }
     return (    
       <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
         <Box> 

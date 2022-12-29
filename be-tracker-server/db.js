@@ -13,9 +13,22 @@ theDB.serialize(() => {
     todo_id INTEGER PRIMARY KEY, 
     todo_title TEXT, 
     todo_duedate TEXT, 
-    todo_body TEXT) WITHOUT ROWID;`;
+    todo_body TEXT) WITHOUT ROWID;`
+
+
+  let sql_users = `CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY,
+    username TEXT
+  ) WITHOUT ROWID;`
+
       
   theDB.run(sql_todos, [], (err) => {
+    if (err) {
+      throw "Error creating table todos";         
+    }      
+  });
+  
+  theDB.run(sql_users, [], (err) => {
     if (err) {
       throw "Error creating table todos";         
     }      

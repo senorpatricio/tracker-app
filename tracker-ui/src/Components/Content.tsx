@@ -5,8 +5,6 @@ import { ITodo, IProps, IContentState } from '../Interfaces/declarations';
 import Todo from './Todo';
 import TodoForm from './TodoForm';
 
-// import './Content.css';
-
 export default class Content extends React.PureComponent<any, IContentState> {
   constructor(props: IProps) {
     super(props);
@@ -23,7 +21,6 @@ export default class Content extends React.PureComponent<any, IContentState> {
      const newTodo: ITodo = { todo_id: Date.now(), todo_title: ntitle, todo_body: nbody, todo_duedate: nduedate }     
      const headers = new Headers();
      headers.append('Content-Type', 'application/json');
-     // Using Fetch to post the new todo:
      const request = new Request('http://localhost:5000/todos/', { method: 'POST', headers: headers, body: JSON.stringify(newTodo), mode: 'cors' });
      
      fetch(request)
@@ -44,11 +41,9 @@ export default class Content extends React.PureComponent<any, IContentState> {
        })
    }  
 
-  // private handleEditTodo(id: number, title: string, body: string, duedate: string) {
   private handleEditTodo(id: number, title: string, body: string) {
     if( isNaN(id) || id === undefined )
       return;
-    // const theTodo: ITodo = { todo_id: id, todo_title: title, todo_body: body, todo_duedate: duedate }
     const theTodo: ITodo = { todo_id: id, todo_title: title, todo_body: body }
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');

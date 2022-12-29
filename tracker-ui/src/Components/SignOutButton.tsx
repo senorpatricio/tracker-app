@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useMsal } from "@azure/msal-react";
 import IconButton from '@mui/material/IconButton';
-// import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 export const SignOutButton = () => {
     const { instance } = useMsal();
@@ -29,7 +29,7 @@ export const SignOutButton = () => {
                 onClick={(event) => setAnchorEl(event.currentTarget)}
                 color="inherit"
             >
-                {/* <AccountCircle /> */}
+                <AccountCircle />
             </IconButton>
             <Menu
                 id="menu-appbar"

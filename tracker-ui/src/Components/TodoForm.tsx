@@ -104,4 +104,4 @@ class TodoForm extends React.PureComponent<IFunc & StyledComponentProps, IState>
 }
 
 const StyledComponent = withStyles(styles)(TodoForm);
-export default StyledComponent; // TodoForm;
+export default StyledComponent;

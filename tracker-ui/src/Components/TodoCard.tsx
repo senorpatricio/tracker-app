@@ -59,7 +59,6 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
   }
 
   const closeDialog = (title: string, body: string, duedate: Date | null) => {
-  // const closeDialog = (title: string, body: string) => {
     if(title === '' || body === '') {
       setOpen(false);
       return;
@@ -69,10 +68,8 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
     setTodoBody(body);
     setTodoDueDate(duedate)
     setOpen(false);
-    // console.log("Inside TodoCard closeDialog: ", todoID, title, body);
     console.log("Inside TodoCard closeDialog: ", todoID, title, body, duedate);
     props.handleEditTodo(todoID, title, body, duedate);        
-    // props.handleEditTodo(todoID, title, body);        
   }
 
   const classes = useStyles();  
@@ -100,7 +97,6 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
         </CardActions>
     </Card>           
     <EditCard title={todo_title} body={todo_body} duedate={todo_duedate} open={open} closeDialog={closeDialog} />
-    {/* <EditCard title={todo_title} body={todo_body}  open={open} closeDialog={closeDialog} /> */}
     </>
   );
 }  

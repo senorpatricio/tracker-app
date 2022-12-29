@@ -25,13 +25,11 @@ export default function EditCard(props: IEditTodo) {
     setBody(event.target.value);
   };
   const handleChangeTodoDueDate = (newValue: Date | null | undefined) => {
-    console.log('new due date', newValue)
     setDueDate(newValue)
   }
   const handleCloseCancel = () => {
     setOpen(false);
     props.closeDialog('', '', null);    
-    // props.closeDialog('', '');    
   }
 
   const handleCloseAccept = () => {
@@ -39,7 +37,6 @@ export default function EditCard(props: IEditTodo) {
     console.log("Inside EditCard: ", title, body, duedate);
     
     props.closeDialog(title, body, duedate);
-    // props.closeDialog(title, body);
   };
 
   return (

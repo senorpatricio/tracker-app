@@ -8,8 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import SignInSignOutButton from "./SignInSignOutButton";
 import UserNameDisplay from './UserNameDisplay';
 
-// import '../components/Header.css';
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

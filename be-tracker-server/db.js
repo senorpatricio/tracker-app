@@ -30,7 +30,7 @@ theDB.serialize(() => {
   
   theDB.run(sql_users, [], (err) => {
     if (err) {
-      throw "Error creating table todos";         
+      throw "Error creating table users";         
     }      
   });
 

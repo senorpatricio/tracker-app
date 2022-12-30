@@ -35,6 +35,18 @@ app.get('/todos', (req, res) => {
   
 });
 
+app.get('/users', (req, res) => {
+  console.log("Received a GET /users request");
+  theDB.all("SELECT * FROM users", (err, results) => {
+    if (err) {
+      res.send(err.message);
+    }
+    console.log(results);
+    res.json(results);
+  })
+  
+});
+
 app.post('/todos', (req, res) => {
   console.log("Received a POST /todos request.");
   

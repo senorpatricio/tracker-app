@@ -1,24 +1,27 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { useMsal, useAccount } from "@azure/msal-react";
 import { ITodo, IProps, IContentState } from '../Interfaces/declarations';
 
 import Todo from './Todo';
 import TodoForm from './TodoForm';
 
-export default class Content extends React.PureComponent<any, IContentState> {
-  constructor(props: IProps) {
-    super(props);
+// export default class Content extends React.PureComponent<any, IContentState> {
+const Content = (props: IProps) => {
+  console.log('props', props)
+  const { accounts } = useMsal();
+  const account = useAccount(accounts[0] || {});
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [todos, setTodos] = useState<ITodo[]>([]);
 
-    this.state = { dataLoaded: false, todos: [] };
-     
-    this.fetchTodos = this.fetchTodos.bind(this);
-    this.handleEditTodo = this.handleEditTodo.bind(this);
-    this.handleDeleteTodo = this.handleDeleteTodo.bind(this);
-    this.handleAddTodo = this.handleAddTodo.bind(this);
-  }
+  useEffect(() => {
+    fetchTodos();
+  }, [account]);
+
+  useEffect(() => {}, [todos])
+
   
-  handleAddTodo(ntitle: string, nbody: string, nduedate: Date | null) {        
-     const newTodo: ITodo = { todo_id: Date.now(), todo_title: ntitle, todo_body: nbody, todo_duedate: nduedate }     
+  const handleAddTodo = (ntitle: string, nbody: string, nTodoUserId: string, nTodoCompleted: boolean, nduedate: Date | null) => {        
+     const newTodo: ITodo = { todo_id: Date.now(), todo_title: ntitle, todo_body: nbody, todo_user_id: nTodoUserId, todo_completed: nTodoCompleted, todo_duedate: nduedate }     
      const headers = new Headers();
      headers.append('Content-Type', 'application/json');
      const request = new Request('http://localhost:5000/todos/', { method: 'POST', headers: headers, body: JSON.stringify(newTodo), mode: 'cors' });
@@ -27,12 +30,12 @@ export default class Content extends React.PureComponent<any, IContentState> {
        .then(response => {
          if(response.status === 200) {
            console.log("Todo saved");          
-           console.log("dataLoaded: ", this.state.dataLoaded);                             
            return response.json();
          }
        })
        .then(data => {
-         this.setState({ dataLoaded: !this.state.dataLoaded, todos: data});
+         setDataLoaded(!dataLoaded);
+         setTodos(data);
        })         
        .catch(err => {
          if (err) {
@@ -41,10 +44,10 @@ export default class Content extends React.PureComponent<any, IContentState> {
        })
    }  
 
-  private handleEditTodo(id: number, title: string, body: string) {
+  const handleEditTodo = (id: number, title: string, body: string, user_id: string, completed: boolean, due_date?: Date |null|undefined) => {
     if( isNaN(id) || id === undefined )
       return;
-    const theTodo: ITodo = { todo_id: id, todo_title: title, todo_body: body }
+    const theTodo: ITodo = { todo_id: id, todo_title: title, todo_body: body, todo_user_id: user_id, todo_completed: completed,  todo_duedate: due_date }
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const request = new Request('http://localhost:5000/todos/' + id, { method: 'PUT', headers: headers, body: JSON.stringify(theTodo), mode: 'cors'} );
@@ -53,20 +56,22 @@ export default class Content extends React.PureComponent<any, IContentState> {
         return response.json();
       })
       .then(data => {
-        this.setState(state => ({ todos: data, dataLoaded:!this.state.dataLoaded }));       
+        setTodos(data);
+        setDataLoaded(!dataLoaded)
       })
       .catch(err => {
         console.error(err);
       })
   }
 
-  handleDeleteTodo(id: number) {
+  const handleDeleteTodo = (id: number) => {
     if(isNaN(id) || id === undefined )
       return;
     
-    let actualState = this.state.todos;
+    let actualState = todos;
     
-    const index = actualState.findIndex((currentValue) =>{
+    const index = actualState.findIndex((currentValue: ITodo) =>{
+      // if(currentValue.todo_id) {}
       return currentValue.todo_id === id;
     }, id);   
 
@@ -78,14 +83,15 @@ export default class Content extends React.PureComponent<any, IContentState> {
         return response.json();
       })
       .then(data => {
-        this.setState({ todos: data }, () => { this.setState({ dataLoaded: !this.state.dataLoaded }) });        
+        setTodos(data);
+        setDataLoaded(!dataLoaded); 
       })
       .catch(err => {
         console.error(err);
       })     
   }
 
-  private fetchTodos() {
+  const fetchTodos = () => {
     const url = 'http://localhost:5000/todos/';
     fetch(url)
       .then(response => {
@@ -97,43 +103,42 @@ export default class Content extends React.PureComponent<any, IContentState> {
         }        
       })
       .then(response => {        
-        const todos = response;
-        this.setState({ todos: todos}, () => { this.setState({dataLoaded: !this.state.dataLoaded }) });
+        const todosResponse = response;
+        setTodos(todosResponse);
+        setDataLoaded(!dataLoaded);
       })
       .catch(err => {
         console.error(err);
       })
   }
 
-  componentDidMount() {
-    this.fetchTodos();
-    this.forceUpdate();
-  }
-
-  private createTodo = (todoData: ITodo) => {
+  const createTodo = (todoData: ITodo) => {
     return (
       <Todo key={todoData.todo_id} 
             todo_id={todoData.todo_id} 
             todo_title={todoData.todo_title} 
             todo_body={todoData.todo_body}
             todo_duedate={todoData.todo_duedate}
-            handleDeleteTodo={this.handleDeleteTodo} 
-            handleEditTodo={this.handleEditTodo} 
+            todo_completed={todoData.todo_completed}
+            todo_user_id={todoData.todo_user_id}
+            handleDeleteTodo={handleDeleteTodo} 
+            handleEditTodo={handleEditTodo} 
             />
     )
   } 
 
-  public render() { 
+  // public render() { 
     
     return(
       <>
-        <TodoForm handleAddTodo={this.handleAddTodo}/>
-        { ((!this.state.todos) || (this.state.todos.length <= 0)) && (<h3>No todos to show!</h3>)  }
-        
+        <TodoForm handleAddTodo={handleAddTodo} user_id={account?.localAccountId} />
+        { ((todos !== null && todos.length !<= 0)) && (<h3>No todos to show!</h3>)  }
         {
-          (this.state.todos.map(todo => this.createTodo(todo)))
+          (todos.map(todo => createTodo(todo)))
         }
       </>
     );
-  }
+  // }
 }
+
+export default Content;

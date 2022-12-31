@@ -8,6 +8,7 @@ import App from "./Components/App";
 // MSAL imports
 import { PublicClientApplication, EventType, EventMessage, AuthenticationResult } from "@azure/msal-browser";
 import { msalConfig } from "./authConfig";
+import { IUser } from './Interfaces/declarations';
 
 export const msalInstance = new PublicClientApplication(msalConfig);
 
@@ -24,6 +25,8 @@ msalInstance.addEventCallback((event: EventMessage) => {
         msalInstance.setActiveAccount(account);
     }
 });
+
+// console.log('active',msalInstance.getActiveAccount())
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

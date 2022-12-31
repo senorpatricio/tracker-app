@@ -38,13 +38,21 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
   const [todoID, setTodoID] = useState<number>(props.todo_id);
   const [todo_title, setTodoTitle] = useState<string>(props.todo_title);
   const [todo_body, setTodoBody] = useState<string>(props.todo_body);
+  const [todo_user_id, setTodoUserId] = useState<string>(props.todo_user_id);
+  const [todo_completed, setTodoCompleted] = useState<boolean>(props.todo_completed);
   const [todo_duedate, setTodoDueDate] = useState<Date | null | undefined>(props.todo_duedate);
   const [open, setOpen] = useState<boolean>(false);
   
   const datetime = (dt: number | Date) => {
+    console.log('dt?', dt)
     let date: Date = new Date(dt);
     let result: string = date.toLocaleDateString() + ' | ' + date.toLocaleTimeString();
+    console.log('result', result)
     return result;
+  }
+
+  const dueDateParse = () => {
+
   }
 
   const delTodo = () => {
@@ -58,7 +66,7 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
     setOpen(true);
   }
 
-  const closeDialog = (title: string, body: string, duedate: Date | null) => {
+  const closeDialog = (title: string, body: string, userId: string, completed: boolean, duedate: Date | null) => {
     if(title === '' || body === '') {
       setOpen(false);
       return;
@@ -67,9 +75,10 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
     setTodoTitle(title);
     setTodoBody(body);
     setTodoDueDate(duedate)
+    setTodoUserId(userId)
     setOpen(false);
-    console.log("Inside TodoCard closeDialog: ", todoID, title, body, duedate);
-    props.handleEditTodo(todoID, title, body, duedate);        
+    console.log("Inside TodoCard closeDialog: ", todoID, title, body, userId, completed, duedate);
+    props.handleEditTodo(todoID, title, body, userId, completed, duedate);        
   }
 
   const classes = useStyles();  
@@ -96,7 +105,7 @@ const TodoCard = (props: ITodo & ITodoHandlers) => {
             <Button id="delTodo" size="small" variant="contained" color="secondary" onClick={delTodo}>X</Button>
         </CardActions>
     </Card>           
-    <EditCard title={todo_title} body={todo_body} duedate={todo_duedate} open={open} closeDialog={closeDialog} />
+    <EditCard title={todo_title} body={todo_body} duedate={todo_duedate} completed={todo_completed} userId={todo_user_id} open={open} closeDialog={closeDialog} />
     </>
   );
 }  

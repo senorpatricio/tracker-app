@@ -7,7 +7,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import TextField from '@mui/material/TextField';
 
-import { ITodo, IFunc } from '../Interfaces/declarations';
+import { ITodo, IFunc, IUserId } from '../Interfaces/declarations';
+import { middleware } from 'yargs';
 
 // import './TodoForm.css';
 
@@ -30,16 +31,20 @@ interface IState {
   todo_title: string;
   todo_body: string;
   todo_duedate: Date | null;
+  todo_completed: boolean;
+  todo_user_id: string | undefined | null;
 }
 
-class TodoForm extends React.PureComponent<IFunc & StyledComponentProps, IState> {
-  constructor(props: IFunc & StyledComponentProps) {
+class TodoForm extends React.PureComponent<IFunc & StyledComponentProps & IUserId, IState> {
+  constructor(props: IFunc & StyledComponentProps & IUserId) {
     super(props);
 
     this.state = {
       todo_title: '',
       todo_body: '',
-      todo_duedate: null
+      todo_duedate: null,
+      todo_completed: false,
+      todo_user_id: props.user_id
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,7 +67,6 @@ class TodoForm extends React.PureComponent<IFunc & StyledComponentProps, IState>
   }
   
   private handleChangeTodoDueDate(newValue: Date | null) {
-    console.log('new date',newValue)
     this.setState({ todo_duedate: newValue })
   }
 
@@ -70,8 +74,8 @@ class TodoForm extends React.PureComponent<IFunc & StyledComponentProps, IState>
     
     if(this.state.todo_title === '' || this.state.todo_body === '') 
       return;
-    this.props.handleAddTodo(this.state.todo_title, this.state.todo_body, this.state.todo_duedate);
-    this.setState({ todo_title: '', todo_body: '', todo_duedate: null });
+    this.props.handleAddTodo(this.state.todo_title, this.state.todo_body, this.state.todo_user_id, this.state.todo_completed, this.state.todo_duedate);
+    this.setState({ todo_title: '', todo_body: '', todo_duedate: null, todo_user_id: '', todo_completed: false});
   }
   
   render() {
@@ -89,13 +93,13 @@ class TodoForm extends React.PureComponent<IFunc & StyledComponentProps, IState>
             fullWidth variant="filled" value={todo_body} onChange={this.handleChangeTodoBody} /> 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
-            renderInput={(props) => <TextField variant="outlined" {...props}/>}
+            renderInput={(props) => <TextField style={{marginTop: '10px'}} variant="outlined" {...props}/>}
               value={todo_duedate}
               onChange={this.handleChangeTodoDueDate}
               
             />
           </LocalizationProvider>
-          <Button style={ {marginTop:'10px'}} variant="contained" color="primary" onClick={this.addTodo}>Add Todo</Button>
+          <Button style={ {marginTop:'10px', marginLeft: '10px'}} variant="contained" color="primary" onClick={this.addTodo}>Add Todo</Button>
         </Box>    
       </form>                
     );

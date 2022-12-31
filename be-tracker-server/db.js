@@ -11,14 +11,17 @@ theDB = prepareDB(dbname);
 theDB.serialize(() => {
   let sql_todos = `CREATE TABLE IF NOT EXISTS todos (
     todo_id INTEGER PRIMARY KEY, 
-    todo_title TEXT, 
-    todo_duedate TEXT, 
-    todo_body TEXT) WITHOUT ROWID;`
+    todo_title TEXT,  
+    todo_body TEXT,
+    todo_user_id TEXT,
+    todo_completed BOOLEAN,
+    todo_duedate TEXT) WITHOUT ROWID;`
 
 
   let sql_users = `CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
-    username TEXT
+    username TEXT,
+    user_email TEXT
   ) WITHOUT ROWID;`
 
       
